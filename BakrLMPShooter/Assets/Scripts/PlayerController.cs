@@ -5,30 +5,33 @@ using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
-    private float horizontal;
-    [SerializeField] private LayerMask groundLayer;
-    
-    [HideInInspector] public bool isFacingRight;
-    private Rigidbody2D rb;
-    [SerializeField] private Transform groundCheck;
-    [SerializeField] Slider healthBar;
-
-
     [Header("----------PROPERTIES----------")]
-    [SerializeField] private float health;
+    [SerializeField] public float health;
     [SerializeField] private float speed;
     [SerializeField] private float jumpPower;
+    [SerializeField] private Color playerColor;
 
     [Header("----------CONTROLS----------")]
     [SerializeField] private KeyCode moveLeft;
     [SerializeField] private KeyCode moveRight;
     [SerializeField] private KeyCode jump;
 
+    [Header("----------OTHER----------")]
+    [SerializeField] private LayerMask groundLayer;
+    [SerializeField] private Transform groundCheck;
+    [SerializeField] private Slider healthBar;
+    [HideInInspector] public bool isFacingRight;
+    [SerializeField] private SpriteRenderer playerSprite;
+    private Rigidbody2D rb;
+    private float horizontal;
+
     private void Start()
     {
         rb = gameObject.GetComponent<Rigidbody2D>(); 
         healthBar.maxValue = health;
         healthBar.value = health;
+        playerSprite.color = playerColor;
+        healthBar.image.color = playerColor;
     }
 
     private void Update()
