@@ -1,51 +1,55 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
     private float horizontal;
     [SerializeField] private LayerMask groundLayer;
     
-    private bool isFacingRight;
-
+    [HideInInspector] public bool isFacingRight;
     private Rigidbody2D rb;
     [SerializeField] private Transform groundCheck;
+    [SerializeField] Slider healthBar;
 
 
     [Header("----------PROPERTIES----------")]
-    [SerializeField] private float player;
+    [SerializeField] private float health;
     [SerializeField] private float speed;
     [SerializeField] private float jumpPower;
 
+    [Header("----------CONTROLS----------")]
+    [SerializeField] private KeyCode moveLeft;
+    [SerializeField] private KeyCode moveRight;
+    [SerializeField] private KeyCode jump;
+
     private void Start()
     {
-        rb = gameObject.GetComponent<Rigidbody2D>();
-
-        if(player == 1) {
-            isFacingRight = true;
-        } else {
-            isFacingRight = false;
-        }
+        rb = gameObject.GetComponent<Rigidbody2D>(); 
+        healthBar.maxValue = health;
+        healthBar.value = health;
     }
 
     private void Update()
     {
-        if(player == 1) {
-            horizontal = Input.GetAxisRaw("Horizontal1");
-        } else if(player == 2) {
-            horizontal = Input.GetAxisRaw("Horizontal2");
+        if (Input.GetKey(moveLeft))
+        {
+            horizontal = -1;
+        } else if (Input.GetKey(moveRight))
+        {
+            horizontal = 1;
+        } else if(Input.GetKeyUp(moveRight) || Input.GetKeyUp(moveLeft))
+        {
+            horizontal = 0;
         }
 
-        if (player == 1) {
-            if(Input.GetKeyDown(KeyCode.W) && IsGrounded()) {
+        
+        if(Input.GetKeyDown(jump) && IsGrounded()) 
+        {
                 rb.velocity = new Vector2(rb.velocity.x, jumpPower);
-            }
-        } else if (player == 2) {
-            if (Input.GetKeyDown(KeyCode.UpArrow) && IsGrounded()) {
-                rb.velocity = new Vector2(rb.velocity.x, jumpPower);
-            }
         }
+      
 
         Flip();
 
@@ -58,7 +62,6 @@ public class PlayerController : MonoBehaviour
 
     private bool IsGrounded()
     {
-        Debug.Log(Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer));
         return Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
     }
 
@@ -70,5 +73,12 @@ public class PlayerController : MonoBehaviour
             localScale.x *= -1f;
             transform.localScale = localScale;
         }
+    }
+
+
+    public void TakeDamage(float damage)
+    {
+        health -= damage;
+        healthBar.value = health;
     }
 }
