@@ -17,6 +17,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private KeyCode jump;
 
     [Header("----------OTHER----------")]
+    [SerializeField] private ParticleSystem bloodParticle;
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private Transform groundCheck;
     [SerializeField] private Slider healthBar;
@@ -24,6 +25,28 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private SpriteRenderer playerSprite;
     private Rigidbody2D rb;
     private float horizontal;
+
+    private void Awake()
+    {
+        ColorPicker colorPicker = GameObject.FindAnyObjectByType<ColorPicker>();
+        if (colorPicker != null) {
+            if (gameObject.name == "Player 1") {
+                playerColor = colorPicker.firstPlayerPickedColor;
+            } else if (gameObject.name == "Player 2") {
+                playerColor = colorPicker.secondPlayerPickedColor;
+            } else {
+                playerColor = Color.white;
+            }
+        } else {
+            if (gameObject.name == "Player 1") {
+                playerColor = Color.red;
+            } else if (gameObject.name == "Player 2") {
+                playerColor = Color.blue;
+            }
+        }
+        
+        
+    }
 
     private void Start()
     {
@@ -83,5 +106,15 @@ public class PlayerController : MonoBehaviour
     {
         health -= damage;
         healthBar.value = health;
+        bloodParticle.Play();
+    }
+
+    public void Heal(float heal)
+    {
+        health += heal;
+        healthBar.value = health;
+        if(health > 100f) {
+            health = 100f;
+        }
     }
 }

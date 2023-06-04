@@ -10,7 +10,6 @@ public class GameManager : MonoBehaviour
     [SerializeField] List<PlayerController> playerControllers;
     [SerializeField] GameObject winScreen;
 
-
     private void Start()
     {
         Time.timeScale = 1.0f;
@@ -42,6 +41,9 @@ public class GameManager : MonoBehaviour
 
     public void ExitButton()
     {
+        if(GameObject.FindAnyObjectByType<ColorPicker>() != null) {
+            Destroy(GameObject.FindAnyObjectByType<ColorPicker>().gameObject);
+        }
         SceneManager.LoadScene(0);
     }
 }
